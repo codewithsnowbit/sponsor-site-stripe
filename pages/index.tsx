@@ -1,85 +1,81 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
+import { useState } from 'react'
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
+const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY}`);
+
 
 const Home: NextPage = () => {
+  const [amount, setAmount] = useState<number | null>(0)
+
+  const createCheckOutSession = async () => {
+    const stripe = await stripePromise;
+    const checkoutSession = await axios.post("/api/checkout", {
+      amount: amount,
+    });
+
+    const result = await stripe?.redirectToCheckout({
+      sessionId: checkoutSession.data.id,
+    });
+
+    if (result?.error) {
+      alert(result?.error.message);
+    }
+  };
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
 
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
+<section className="relative flex flex-wrap lg:h-screen lg:items-center font-sans">
+  <div className="w-full px-4 py-12 lg:w-1/2 sm:px-6 lg:px-8 sm:py-16 lg:py-24">
+    <div className="max-w-lg mx-auto text-center">
+      <h1 className="text-2xl font-bold sm:text-3xl">Sponsor me!</h1>
 
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
-            pages/index.tsx
-          </code>
-        </p>
-
-        <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          className="flex items-center justify-center gap-2"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-        </a>
-      </footer>
+      <p className="mt-4 text-gray-500">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      </p>
     </div>
+
+    <div className="max-w-md mx-auto mt-8 mb-0 space-y-4">
+      <div>
+        <label  className="sr-only">Enter amount (USD)</label>
+
+        <div className="relative">
+          <input
+            type="number"
+            className="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-md"
+            placeholder="Enter amount (USD)"
+            onChange={e => setAmount(parseInt(e.target.value))}
+          />
+
+          <span className="absolute inset-y-0 inline-flex items-center right-4 text-gray-400">
+            $
+          </span>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <p></p>
+        <button
+          className="inline-block px-5 py-3 ml-3 text-sm font-medium text-white bg-blue-500 rounded-lg"
+          onClick={createCheckOutSession}
+          disabled={!amount}
+          role="link"
+        >
+          Sponsor
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div className="relative w-full h-64 sm:h-96 lg:w-1/2 lg:h-full bg-cover">
+    <img
+      className="absolute inset-0 object-cover w-full h-full"
+      src="bg.webp"
+      alt="BG"
+    />
+  </div>
+</section>
+    </>
   )
 }
 
