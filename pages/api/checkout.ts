@@ -1,10 +1,10 @@
 const stripe = require("stripe")(`${process.env.STRIPE_SECRET_KEY}`);
 import { NextApiRequest, NextApiResponse } from "next";
 
-const url = "http://localhost:3000";
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const paymentHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { amount } = req.body;
+  const url = "http://localhost:3000";
 
   const items = [
     {
@@ -29,4 +29,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(200).json({ id: session.id });
 };
 
-export default handler;
+export default paymentHandler;
