@@ -8,18 +8,18 @@ const stripePromise = loadStripe(`${process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY}`)
 const Home: NextPage = () => {
   const [amount, setAmount] = useState<number | null>(0)
 
-  const createCheckOutSession = async () => {
+  const checkoutSession = async () => {
     const stripe = await stripePromise;
     const checkoutSession = await axios.post("/api/checkout", {
       amount: amount,
     });
 
-    const result = await stripe?.redirectToCheckout({
+    const res = await stripe?.redirectToCheckout({
       sessionId: checkoutSession.data.id,
     });
 
-    if (result?.error) {
-      alert(result?.error.message);
+    if (res?.error) {
+      alert(res?.error.message);
     }
   };
   return (
@@ -57,7 +57,7 @@ const Home: NextPage = () => {
         <p></p>
         <button
           className="inline-block px-5 py-3 ml-3 text-sm font-medium text-white bg-blue-500 rounded-lg"
-          onClick={createCheckOutSession}
+          onClick={checkoutSession}
           disabled={!amount}
           role="link"
         >
