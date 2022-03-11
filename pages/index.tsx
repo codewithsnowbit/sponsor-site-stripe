@@ -44,7 +44,7 @@ const Home: NextPage = () => {
             type="number"
             className="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-md"
             placeholder="Enter amount (USD)"
-            onChange={e => setAmount(parseInt(e.target.value))}
+            onChange={e => setAmount(parseInt(e.target.value) * 100)}
           />
 
           <span className="absolute inset-y-0 inline-flex items-center right-4 text-gray-400">

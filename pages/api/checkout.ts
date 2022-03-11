@@ -13,7 +13,7 @@ const paymentHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         product_data: {
           name: `Sponsoring SnowBit`,
         },
-        unit_amount: amount * 100,
+        unit_amount: amount,
       },
       quantity: 1,
     },
